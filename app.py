@@ -22,15 +22,13 @@ def data():
     headers["Accept"] = "application/json"
 
 
-    # diva Am Tabor = 60200051
-    respAmTabor = requests.get("https://www.wienerlinien.at/ogd_realtime/monitor?diva=60200051&activateTrafficInfo=stoerungkurz&activateTrafficInfo=stoerunglang&activateTrafficInfo=aufzugsinfo", headers=headers)
-    respNordbahnstrasse = requests.get("https://www.wienerlinien.at/ogd_realtime/monitor?diva=60200941&activateTrafficInfo=stoerungkurz&activateTrafficInfo=stoerunglang&activateTrafficInfo=aufzugsinfo", headers=headers)
-    print(respAmTabor.text)
-    print(respNordbahnstrasse.text)
-    dataAmTabor = json.loads(respAmTabor.text)
-    dataNordbahnstrasse = json.loads(respNordbahnstrasse.text)
+    # diva Am Tabor = 60201858
+    stopData = requests.get("https://www.wienerlinien.at/ogd_realtime/monitor?diva=60201858&activateTrafficInfo=stoerungkurz&activateTrafficInfo=stoerunglang&activateTrafficInfo=aufzugsinfo", headers=headers)
+    print(stopData.text)
+    aderklaaerStrJSON = json.loads(stopData.text)
 
-    data = [dataAmTabor, dataNordbahnstrasse]
+    #data = [dataAmTabor, dataNordbahnstrasse]
+    data = aderklaaerStrJSON
     print(data)
     return render_template("index.html", data=json.dumps(data))
 
