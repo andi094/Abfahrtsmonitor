@@ -1,1 +1,4 @@
 # Abfahrtsmonitor
+
+.idea/
+.venv
