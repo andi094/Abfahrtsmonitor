@@ -60,15 +60,8 @@
                 }
             ]
 
-            var obj = JSON.parse(trafficInfo, function (key, value) {
-                if (key == "trafficInfoTitle") {
-                    return value.toUpperCase();
-                } else {
-                    return value;
-                }
-                });
-
-            document.getElementById("demo").innerHTML = obj.title + ", " + obj.description; 
+            document.getElementById("trafficInfo").innerHTML = trafficInfo[0].trafficInfoTitle + "<br> " + trafficInfo[0].trafficInfoDescription;
+            document.getElementById("trafficInfo").style.fontSize = "120%"; 
         } else {
             document.getElementById("trafficInfo").innerHTML = "Keine Störungen gemeldet!"
             document.getElementById("trafficInfo").style.fontSize = "120%";
