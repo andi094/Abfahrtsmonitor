@@ -22,8 +22,8 @@ def data():
     headers["Accept"] = "application/json"
 
 
-    # diva Am Tabor = 60201858
-    stopData = requests.get("https://www.wienerlinien.at/ogd_realtime/monitor?diva=60201858&activateTrafficInfo=stoerungkurz&activateTrafficInfo=stoerunglang&activateTrafficInfo=aufzugsinfo", headers=headers)
+    # Aderklaaer Straße DIVA: 60201858
+    stopData = requests.get("https://www.wienerlinien.at/ogd_realtime/monitor?diva=60201858&activateTrafficInfo=stoerunglang&activateTrafficInfo=aufzugsinfo", headers=headers)
     print(stopData.text)
     aderklaaerStrJSON = json.loads(stopData.text)
 
