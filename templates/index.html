@@ -17,7 +17,10 @@
 
 <body class="dark-theme">
 
-    <div id="header"></div>
+    <div style="width: 100%; overflow: hidden;">
+        <div id="header" style="width: 600px; float: left;"> Header </div>
+        <div id="time" class="time-container" style="margin-left: 620px;" > Time</div>
+    </div>
 
 
     <div id="container" class="aderklaaerStrasseU1">
@@ -30,36 +33,70 @@
             <tr>
                 <th>Linie</th>
                 <th>Richtung</th>
-                <th>Nächste Fahrt [min]</th>
-                <th>Übernächste Fahrt [min]</th>
+                <th>Nächste Fahrten [min]</th>
+                <th>.</th>
+                <th>.</th>
             </tr>
         </thead>
         <tbody id="tableAderklaaerStrasse"></tbody>
     </table>
 
-    <div id="time" class="time-container"></div>
+    <div id="trafficInfo"> </div>
+
+    
 
     <script>
         // reads the data from the server using Jinja2
         let data = {{ data | safe }};
         console.log("Data from the Flask Server: ");
         console.log(data);
-        console.log(data['data'].monitors[0]);
 
+        // Check if there is any Traffic Info in the data object
+        if(typeof data['data'].trafficInfos != "undefined") {
+            var trafficInfo = [
+                {
+                    "trafficInfoTitle": data['data'].trafficInfos[0].title,
+                    "trafficInfoDescription": data['data'].trafficInfos[0].description
+                }
+            ]
 
+            var obj = JSON.parse(trafficInfo, function (key, value) {
+                if (key == "trafficInfoTitle") {
+                    return value.toUpperCase();
+                } else {
+                    return value;
+                }
+                });
+
+            document.getElementById("demo").innerHTML = obj.title + ", " + obj.description; 
+        } else {
+            document.getElementById("trafficInfo").innerHTML = "Keine Störungen gemeldet!"
+            document.getElementById("trafficInfo").style.fontSize = "120%";
+        }
+
+        // Parse data object from the server
         var dataAderklaaerStrasse = [
             {
-                "Linie": data['data'].monitors[0].lines[0].name,
-                "Richtung": data['data'].monitors[0].lines[0].towards,
-                "Abfahrt1": /*Math.floor((new Date(*/data['data'].monitors[0].lines[0].departures.departure[0].departureTime.countdown,//), - new Date()) / (1000 * 60)).toString(),
-                "Abfahrt2": /*Math.floor((new Date(*/data['data'].monitors[0].lines[0].departures.departure[1].departureTime.countdown//) - new Date()) / (1000 * 60)).toString()
+                "Line": data['data'].monitors[0].lines[0].name,
+                "Direction": data['data'].monitors[0].lines[0].towards,
+                "Departure1": data['data'].monitors[0].lines[0].departures.departure[0].departureTime.countdown,
+                "Departure2": data['data'].monitors[0].lines[0].departures.departure[1].departureTime.countdown,
+                "Departure3": data['data'].monitors[0].lines[0].departures.departure[2].departureTime.countdown
             },
 
             {
-                "Linie": data['data'].monitors[1].lines[0].name,
-                "Richtung": data['data'].monitors[1].lines[0].towards,
-                "Abfahrt1": data['data'].monitors[1].lines[0].departures.departure[0].departureTime.countdown,
-                "Abfahrt2": data['data'].monitors[1].lines[0].departures.departure[1].departureTime.countdown
+                "Line": data['data'].monitors[1].lines[0].name,
+                "Direction": data['data'].monitors[1].lines[0].towards,
+                "Departure1": data['data'].monitors[1].lines[0].departures.departure[0].departureTime.countdown,
+                "Departure2": data['data'].monitors[1].lines[0].departures.departure[1].departureTime.countdown,
+                "Departure3": data['data'].monitors[1].lines[0].departures.departure[2].departureTime.countdown
+            },
+            {
+                "Line": data['data'].monitors[2].lines[0].name,
+                "Direction": data['data'].monitors[2].lines[0].towards,
+                "Departure1": data['data'].monitors[2].lines[0].departures.departure[0].departureTime.countdown,
+                "Departure2": data['data'].monitors[2].lines[0].departures.departure[1].departureTime.countdown,
+                "Departure3": data['data'].monitors[2].lines[0].departures.departure[2].departureTime.countdown
             }
         ]
 
@@ -67,6 +104,7 @@
         document.getElementById("header").style.fontSize = "150%";
         console.log("Parsed data object: ");
         console.log(dataAderklaaerStrasse);
+        console.log(trafficInfo);
 
         console.log("Abfahrtszeit von data object: ");
         console.log(new Date(data['data'].monitors[0].lines[0].departures.departure[0].departureTime.timeReal));
@@ -75,48 +113,49 @@
             const table = document.getElementById(container);
             items.forEach(element => {
                 let row = table.insertRow();
-                let linie = row.insertCell(0);
-                linie.innerHTML = element.Linie;
-                let richtung = row.insertCell(1);
-                richtung.innerHTML = element.Richtung;
-                let abfahrt1 = row.insertCell(2);
-                abfahrt1.innerHTML = element.Abfahrt1;
-                let abfahrt2 = row.insertCell(3);
-                abfahrt2.innerHTML = element.Abfahrt2;
-
+                let line = row.insertCell(0);
+                line.innerHTML = element.Line;
+                let direction = row.insertCell(1);
+                direction.innerHTML = element.Direction;
+                let departure1 = row.insertCell(2);
+                departure1.innerHTML = element.Departure1;
+                let departure2 = row.insertCell(3);
+                departure2.innerHTML = element.Departure2;
+                let departure3 = row.insertCell(4);
+                departure3.innerHTML = element.Departure3;
             });
         }
 
         loadTableData(dataAderklaaerStrasse, "tableAderklaaerStrasse");
 
-        function checkTime(i) {
+        function formatTime(i) {
             if (i < 10) {
                 i = "0" + i;
             }
             return i;
         }
 
-        function startTime() {
+        function startTimer() {
             var today = new Date();
             var h = today.getHours();
             var m = today.getMinutes();
             var s = today.getSeconds();
             // add a zero in front of numbers<10
-            m = checkTime(m);
-            s = checkTime(s);
+            m = formatTime(m);
+            s = formatTime(s);
             document.getElementById('time').innerHTML = h + ":" + m + ":" + s;
             document.getElementById("time").style.fontSize = "400%";
             t = setTimeout(function () {
-                startTime()
+                startTimer()
             }, 500);
         }
-        startTime();
+        startTimer();
 
 
         // Refresh timer
         window.setTimeout(function () {
             window.location.reload();
-        }, 30000);
+        }, 400000);
 
     </script>
 
