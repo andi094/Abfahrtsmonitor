@@ -4,14 +4,26 @@
 .aderklaaerStrasseU1 {
   display: flex;
   margin: 0;
+  padding: 10px;
 }
 
 .header {
+  margin: auto;
   font-size: 1.2em;
+  padding: 10px;
+}
+
+.trafficInfo {
+  font-size: 1.2em;
+  padding: 10px;
+  text-align: center;
 }
 
 .time-container {
-  display: flex;
+  position: fixed;
+  text-align: center;
+  margin: auto;
+  padding: 10px;
 }
 
 /* Dark Mode styles */
