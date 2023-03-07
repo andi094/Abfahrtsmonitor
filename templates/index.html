@@ -19,7 +19,7 @@
 
     <div style="width: 100%; overflow: hidden;">
         <div id="header" style="width: 600px; float: left;"> Header </div>
-        <div id="time" class="time-container" style="margin-left: 620px;" > Time</div>
+        <div id="time" class="time-container" style="margin-left: 500px;" > Time</div>
     </div>
 
 
@@ -34,8 +34,7 @@
                 <th>Linie</th>
                 <th>Richtung</th>
                 <th>Nächste Fahrten [min]</th>
-                <th>.</th>
-                <th>.</th>
+                <th>Übernächste Fahrt [min]</th>
             </tr>
         </thead>
         <tbody id="tableAderklaaerStrasse"></tbody>
@@ -67,6 +66,7 @@
             document.getElementById("trafficInfo").style.fontSize = "120%";
         }
 
+        // Prüfe, ob der Bus noch fährst oder nicht.
         if(typeof data['data'].monitors[2] != "undefined") {
             // Parse data object from the server
             var dataAderklaaerStrasse = [
@@ -74,23 +74,20 @@
                     "Line": data['data'].monitors[0].lines[0].name,
                     "Direction": data['data'].monitors[0].lines[0].towards,
                     "Departure1": data['data'].monitors[0].lines[0].departures.departure[0].departureTime.countdown,
-                    "Departure2": data['data'].monitors[0].lines[0].departures.departure[1].departureTime.countdown,
-                    "Departure3": data['data'].monitors[0].lines[0].departures.departure[2].departureTime.countdown
+                    "Departure2": data['data'].monitors[0].lines[0].departures.departure[1].departureTime.countdown
                 },
 
                 {
                     "Line": data['data'].monitors[1].lines[0].name,
                     "Direction": data['data'].monitors[1].lines[0].towards,
                     "Departure1": data['data'].monitors[1].lines[0].departures.departure[0].departureTime.countdown,
-                    "Departure2": data['data'].monitors[1].lines[0].departures.departure[1].departureTime.countdown,
-                    "Departure3": data['data'].monitors[1].lines[0].departures.departure[2].departureTime.countdown
+                    "Departure2": data['data'].monitors[1].lines[0].departures.departure[1].departureTime.countdown
                 },
                 {
                     "Line": data['data'].monitors[2].lines[0].name,
                     "Direction": data['data'].monitors[2].lines[0].towards,
                     "Departure1": data['data'].monitors[2].lines[0].departures.departure[0].departureTime.countdown,
-                    "Departure2": data['data'].monitors[2].lines[0].departures.departure[1].departureTime.countdown,
-                    "Departure3": data['data'].monitors[2].lines[0].departures.departure[2].departureTime.countdown
+                    "Departure2": data['data'].monitors[2].lines[0].departures.departure[1].departureTime.countdown
                 }
             ]
         } else {
@@ -99,16 +96,14 @@
                     "Line": data['data'].monitors[0].lines[0].name,
                     "Direction": data['data'].monitors[0].lines[0].towards,
                     "Departure1": data['data'].monitors[0].lines[0].departures.departure[0].departureTime.countdown,
-                    "Departure2": data['data'].monitors[0].lines[0].departures.departure[1].departureTime.countdown,
-                    "Departure3": data['data'].monitors[0].lines[0].departures.departure[2].departureTime.countdown
+                    "Departure2": data['data'].monitors[0].lines[0].departures.departure[1].departureTime.countdown
                 },
 
                 {
                     "Line": data['data'].monitors[1].lines[0].name,
                     "Direction": data['data'].monitors[1].lines[0].towards,
                     "Departure1": data['data'].monitors[1].lines[0].departures.departure[0].departureTime.countdown,
-                    "Departure2": data['data'].monitors[1].lines[0].departures.departure[1].departureTime.countdown,
-                    "Departure3": data['data'].monitors[1].lines[0].departures.departure[2].departureTime.countdown
+                    "Departure2": data['data'].monitors[1].lines[0].departures.departure[1].departureTime.countdown
                 }
             ]
         }
@@ -134,8 +129,6 @@
                 departure1.innerHTML = element.Departure1;
                 let departure2 = row.insertCell(3);
                 departure2.innerHTML = element.Departure2;
-                let departure3 = row.insertCell(4);
-                departure3.innerHTML = element.Departure3;
             });
         }
 
@@ -168,7 +161,7 @@
         // Refresh timer
         window.setTimeout(function () {
             window.location.reload();
-        }, 400000);
+        }, 40000);
 
     </script>
 
