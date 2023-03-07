@@ -33,7 +33,7 @@
             <tr>
                 <th>Linie</th>
                 <th>Richtung</th>
-                <th>Nächste Fahrten [min]</th>
+                <th>Nächste Fahrt [min]</th>
                 <th>Übernächste Fahrt [min]</th>
             </tr>
         </thead>
@@ -66,8 +66,8 @@
             document.getElementById("trafficInfo").style.fontSize = "120%";
         }
 
-        // Prüfe, ob der Bus noch fährst oder nicht.
-        if(typeof data['data'].monitors[2] != "undefined") {
+        // Check if there is any data
+        if(typeof data['data'].monitors[0] != "undefined" && typeof data['data'].monitors[1] != "undefined" && typeof data['data'].monitors[2] != "undefined") {
             // Parse data object from the server
             var dataAderklaaerStrasse = [
                 {
@@ -90,7 +90,7 @@
                     "Departure2": data['data'].monitors[2].lines[0].departures.departure[1].departureTime.countdown
                 }
             ]
-        } else {
+        } else if (typeof data['data'].monitors[0] != "undefined" && typeof data['data'].monitors[1] != "undefined") {
             var dataAderklaaerStrasse = [
                 {
                     "Line": data['data'].monitors[0].lines[0].name,
@@ -106,6 +106,32 @@
                     "Departure2": data['data'].monitors[1].lines[0].departures.departure[1].departureTime.countdown
                 }
             ]
+        } else if(typeof data['data'].monitors[0] != "undefined") {
+            if(typeof data['data'].monitors[0].lines[0].departures.departure[0] != "undefined" && typeof data['data'].monitors[0].lines[0].departures.departure[1] != "undefined") {
+                var dataAderklaaerStrasse = [
+                    {
+                    "Line": data['data'].monitors[0].lines[0].name, 
+                    "Direction": data['data'].monitors[0].lines[0].towards,
+                    "Departure1": data['data'].monitors[0].lines[0].departures.departure[0].departureTime.countdown,
+                    "Departure2": data['data'].monitors[0].lines[0].departures.departure[1].departureTime.countdown
+                    }
+                ]   
+            } else if (typeof data['data'].monitors[0].lines[0].departures.departure[0] != "undefined") {
+                var dataAderklaaerStrasse = [
+                    {
+                    "Line": data['data'].monitors[0].lines[0].name,
+                    "Direction": data['data'].monitors[0].lines[0].towards,
+                    "Departure1": data['data'].monitors[0].lines[0].departures.departure[0].departureTime.countdown,
+                    "Departure2": "Betriebsschluss"
+                    }
+                ] 
+            } else {
+                document.getElementById("trafficInfo").innerHTML = "Betriebsschluss!"
+                document.getElementById("trafficInfo").style.fontSize = "120%";
+            }
+        } else {
+            document.getElementById("trafficInfo").innerHTML = "Betriebsschluss!"
+            document.getElementById("trafficInfo").style.fontSize = "120%";
         }
 
         document.getElementById("header").innerHTML = "<img src='https://play-lh.googleusercontent.com/r342hitqOFjStwAhRFP8-KosAVepIDU3xAc-9NadGUlP80-3TkCBDsty8N3SqKUsIQ=s180' height=50/> Abfahrtsmonitor";
@@ -114,12 +140,10 @@
         console.log(dataAderklaaerStrasse);
         console.log(trafficInfo);
 
-        console.log("Abfahrtszeit von data object: ");
-        console.log(new Date(data['data'].monitors[0].lines[0].departures.departure[0].departureTime.timeReal));
-
         function loadTableData(items, container) {
-            const table = document.getElementById(container);
-            items.forEach(element => {
+            if(typeof dataAderklaaerStrasse != "undefined") {
+                const table = document.getElementById(container);
+                items.forEach(element => {
                 let row = table.insertRow();
                 let line = row.insertCell(0);
                 line.innerHTML = element.Line;
@@ -129,7 +153,9 @@
                 departure1.innerHTML = element.Departure1;
                 let departure2 = row.insertCell(3);
                 departure2.innerHTML = element.Departure2;
-            });
+                });
+            }
+            
         }
 
         loadTableData(dataAderklaaerStrasse, "tableAderklaaerStrasse");
